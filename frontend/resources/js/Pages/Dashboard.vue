@@ -49,6 +49,7 @@ const roleBgColor = roleBg[role] ?? '#f1f5f9'
                 { title: 'Pagos', desc: 'Aprobar y gestionar pagos', icon: 'payments', color: '#dc2626', bg: '#fef2f2', route: '/admin/payments' },
                 { title: 'Reportes', desc: 'Ventas, inventario y entregas', icon: 'reports', color: '#0d9488', bg: '#f0fdfa', route: '/reports' },
                 { title: 'Mi perfil', desc: 'Editar informacion personal', icon: 'profile', color: '#0891b2', bg: '#e0f2fe', route: '/perfil' },
+                                { title: 'Productos (Microservicio)', desc: 'CRUD conectado al microservicio Java', icon: 'micro', color: '#2563eb', bg: '#eff6ff', route: '/admin/productos-microservicio' },
             ]" :key="card.title"
             @click="router.visit(card.route)"
             style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:1.5rem;cursor:pointer;transition:all 0.2s"
@@ -61,6 +62,7 @@ const roleBgColor = roleBg[role] ?? '#f1f5f9'
                     <svg v-if="card.icon==='payments'" width="22" height="22" fill="none" :stroke="card.color" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
                     <svg v-if="card.icon==='profile'" width="22" height="22" fill="none" :stroke="card.color" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <svg v-if="card.icon==='reports'" width="22" height="22" fill="none" :stroke="card.color" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                        <svg v-if="card.icon==='micro'" width="22" height="22" fill="none" :stroke="card.color" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
                 </div>
                 <div style="font-size:15px;font-weight:600;color:#1e293b;margin-bottom:4px">{{ card.title }}</div>
                 <div style="font-size:13px;color:#64748b">{{ card.desc }}</div>
