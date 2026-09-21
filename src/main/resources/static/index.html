@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Chuzito - Gestión de Productos y Paginación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-hover: #d97706;
+            --primary-light: #fef3c7;
+            --dark-bg: #111827;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --radius: 12px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --transition: all 0.25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-brand h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .header-brand span.badge-logo {
+            background: var(--primary);
+            color: #111827;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .header-info {
+            font-size: 14px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+            flex: 1;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* FORM */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+            background: #ffffff;
+            color: var(--text-main);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .form-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #111827;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .btn-edit {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .btn-edit:hover {
+            background: #bae6fd;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        /* FILTERS & TOOLBAR */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding-left: 36px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* TABLE */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #4b5563;
+            padding: 14px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: #fffbeb;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-stock-ok {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-stock-low {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-stock-zero {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .price-tag {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* PAGINATION STYLING */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .page-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--text-main);
+            min-width: 38px;
+            height: 38px;
+            padding: 0 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary-hover);
+            background: var(--primary-light);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #111827;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f3f4f6;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 14px 22px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--info); }
+
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar-group {
+                justify-content: space-between;
+            }
+            .pagination-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-brand">
+        <span style="font-size: 28px;">🌮</span>
+        <h1>Mi Chuzito</h1>
+        <span class="badge-logo">Spring Boot JPA</span>
+    </div>
+    <div class="header-info">
+        <span>Gestión de Inventario & Paginación</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- FORMULARIO DE REGISTRO / EDICIÓN -->
+    <div class="card">
+        <div class="card-header">
+            <h2 id="tituloFormulario">
+                <span>➕</span> Registrar Nuevo Producto
+            </h2>
+        </div>
+
+        <form id="productoForm">
+            <input type="hidden" id="id">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Producto *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Chuzo de Pollo Especial" required minlength="3" maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <input type="text" id="descripcion" placeholder="Ej: Con arepa y papas a la francesa" maxlength="255">
+                </div>
+
+                <div class="form-group">
+                    <label for="precio">Precio ($ COP) *</label>
+                    <input type="number" id="precio" placeholder="Ej: 18000" min="1" step="any" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="stock">Stock / Unidades *</label>
+                    <input type="number" id="stock" placeholder="Ej: 25" min="0" required>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary" id="btnGuardar">
+                        <span>💾</span> Guardar Producto
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btnCancelar" onclick="cancelarEdicion()" style="display:none;">
+                        <span>✖</span> Cancelar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA PAGINADA DE PRODUCTOS -->
+    <div class="card">
+        <div class="card-header">
+            <h2><span>📦</span> Catálogo de Productos Paginado</h2>
+        </div>
+
+        <!-- BARRA DE HERRAMIENTAS Y CONTROLES DE CONSULTA -->
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="inputBuscar" placeholder="Buscar por nombre o descripción..." oninput="manejarBusqueda()">
+                </div>
+            </div>
+
+            <div class="toolbar-group">
+                <label for="selectSize" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Mostrar:</label>
+                <select id="selectSize" onchange="cambiarTamanioPagina(this.value)">
+                    <option value="5" selected>5 por pág.</option>
+                    <option value="10">10 por pág.</option>
+                    <option value="20">20 por pág.</option>
+                </select>
+
+                <label for="selectSort" style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-left: 10px;">Ordenar por:</label>
+                <select id="selectSort" onchange="cambiarOrden()">
+                    <option value="id-asc" selected>ID (Ascendente)</option>
+                    <option value="id-desc">ID (Descendente)</option>
+                    <option value="nombre-asc">Nombre (A - Z)</option>
+                    <option value="nombre-desc">Nombre (Z - A)</option>
+                    <option value="precio-asc">Precio (Menor a Mayor)</option>
+                    <option value="precio-desc">Precio (Mayor a Menor)</option>
+                    <option value="stock-asc">Stock (Menor a Mayor)</option>
+                    <option value="stock-desc">Stock (Mayor a Menor)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-responsive">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="tablaProductos">
+                <tr>
+                    <td colspan="6" class="loading-spinner">
+                        Cargando productos paginados...
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CONTROLES DE PAGINACIÓN -->
+        <div class="pagination-container" id="seccionPaginacion">
+            <div class="pagination-info" id="infoPaginacion">
+                Cargando información de página...
+            </div>
+
+            <div class="pagination-controls" id="controlesPaginacion">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- TOAST FLOTANTE -->
+<div id="toast" class="toast"></div>
+
+<script>
+    const API_BASE = "/productos";
+    const API_PAGINADO = "/productos/paginado";
+
+    // Variables de estado de paginación
+    let paginaActual = 0;
+    let tamanioPagina = 5;
+    let sortBy = "id";
+    let direction = "asc";
+    let terminoBusqueda = "";
+    let totalPaginas = 1;
+    let totalElementos = 0;
+    let editando = false;
+    let temporizadorBusqueda = null;
+
+    // ==========================================
+    // 1. CARGAR PRODUCTOS PAGINADOS (API REST)
+    // ==========================================
+    async function cargarProductosPaginados(pagina = 0) {
+        paginaActual = pagina;
+        const tabla = document.getElementById("tablaProductos");
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="6" class="loading-spinner">
+                    Cargando página ${paginaActual + 1}...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const url = new URL(API_PAGINADO, window.location.origin);
+            url.searchParams.append("page", paginaActual);
+            url.searchParams.append("size", tamanioPagina);
+            url.searchParams.append("sortBy", sortBy);
+            url.searchParams.append("direction", direction);
+
+            if (terminoBusqueda && terminoBusqueda.trim() !== "") {
+                url.searchParams.append("buscar", terminoBusqueda.trim());
+            }
+
+            const respuesta = await fetch(url.toString());
+
+            if (!respuesta.ok) {
+                throw new Error("No se pudo obtener la página de productos");
+            }
+
+            const pageData = await respuesta.json();
+
+            totalPaginas = pageData.totalPages;
+            totalElementos = pageData.totalElements;
+
+            renderizarTabla(pageData.content);
+            renderizarControlesPaginacion(pageData);
+
+        } catch (error) {
+            console.error("Error al cargar productos paginados:", error);
+            tabla.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align:center; padding: 30px; color: var(--danger);">
+                        ❌ Error al conectar con el servidor o cargar datos paginados.
+                    </td>
+                </tr>
+            `;
+            document.getElementById("infoPaginacion").textContent = "Sin datos disponibles";
+            document.getElementById("controlesPaginacion").innerHTML = "";
+        }
+    }
+
+    // ==========================================
+    // 2. RENDERIZAR TABLA DE PRODUCTOS
+    // ==========================================
+    function renderizarTabla(productos) {
+        const tabla = document.getElementById("tablaProductos");
+        tabla.innerHTML = "";
+
+        if (!productos || productos.length === 0) {
+            tabla.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        🔍 No se encontraron productos con los criterios especificados.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        productos.forEach(prod => {
+            const fila = document.createElement("tr");
+
+            // Badge según nivel de stock
+            let badgeStock = "";
+            if (prod.stock === 0) {
+                badgeStock = `<span class="badge badge-stock-zero">Agotado (0)</span>`;
+            } else if (prod.stock <= 5) {
+                badgeStock = `<span class="badge badge-stock-low">Bajo stock (${prod.stock})</span>`;
+            } else {
+                badgeStock = `<span class="badge badge-stock-ok">${prod.stock} disponibles</span>`;
+            }
+
+            fila.innerHTML = `
+                <td><strong>#${prod.id}</strong></td>
+                <td><strong style="color: var(--text-main);">${escapeHtml(prod.nombre)}</strong></td>
+                <td style="color: var(--text-muted);">${escapeHtml(prod.descripcion || 'Sin descripción')}</td>
+                <td><span class="price-tag">$${Number(prod.precio).toLocaleString("es-CO")}</span></td>
+                <td>${badgeStock}</td>
+                <td style="text-align: center; white-space: nowrap;">
+                    <button class="btn btn-sm btn-edit" onclick="cargarParaEditar(${prod.id})">
+                        ✏️ Editar
+                    </button>
+                    <button class="btn btn-sm btn-delete" onclick="confirmarEliminacion(${prod.id})">
+                        🗑️ Eliminar
+                    </button>
+                </td>
+            `;
+
+            tabla.appendChild(fila);
+        });
+    }
+
+    // ==========================================
+    // 3. RENDERIZAR CONTROLES DE PAGINACIÓN
+    // ==========================================
+    function renderizarControlesPaginacion(data) {
+        const info = document.getElementById("infoPaginacion");
+        const controles = document.getElementById("controlesPaginacion");
+        controles.innerHTML = "";
+
+        if (data.totalElements === 0) {
+            info.textContent = "0 productos encontrados";
+            return;
+        }
+
+        const inicio = (data.number * data.size) + 1;
+        const fin = Math.min((data.number + 1) * data.size, data.totalElements);
+
+        info.innerHTML = `Mostrando <strong>${inicio}</strong> - <strong>${fin}</strong> de <strong>${data.totalElements}</strong> productos | Página <strong>${data.number + 1}</strong> de <strong>${data.totalPages}</strong>`;
+
+        // Botón Primera Página «
+        const btnPrimera = document.createElement("button");
+        btnPrimera.className = "page-btn";
+        btnPrimera.innerHTML = "«";
+        btnPrimera.title = "Primera página";
+        btnPrimera.disabled = data.first;
+        btnPrimera.onclick = () => cargarProductosPaginados(0);
+        controles.appendChild(btnPrimera);
+
+        // Botón Anterior ‹
+        const btnAnterior = document.createElement("button");
+        btnAnterior.className = "page-btn";
+        btnAnterior.innerHTML = "‹";
+        btnAnterior.title = "Página anterior";
+        btnAnterior.disabled = data.first;
+        btnAnterior.onclick = () => cargarProductosPaginados(data.number - 1);
+        controles.appendChild(btnAnterior);
+
+        // Números de Página
+        const maxBotones = 5;
+        let startPage = Math.max(0, data.number - Math.floor(maxBotones / 2));
+        let endPage = Math.min(data.totalPages - 1, startPage + maxBotones - 1);
+
+        if (endPage - startPage + 1 < maxBotones) {
+            startPage = Math.max(0, endPage - maxBotones + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const btnNum = document.createElement("button");
+            btnNum.className = `page-btn ${i === data.number ? 'active' : ''}`;
+            btnNum.textContent = i + 1;
+            btnNum.onclick = () => cargarProductosPaginados(i);
+            controles.appendChild(btnNum);
+        }
+
+        // Botón Siguiente ›
+        const btnSiguiente = document.createElement("button");
+        btnSiguiente.className = "page-btn";
+        btnSiguiente.innerHTML = "›";
+        btnSiguiente.title = "Página siguiente";
+        btnSiguiente.disabled = data.last;
+        btnSiguiente.onclick = () => cargarProductosPaginados(data.number + 1);
+        controles.appendChild(btnSiguiente);
+
+        // Botón Última Página »
+        const btnUltima = document.createElement("button");
+        btnUltima.className = "page-btn";
+        btnUltima.innerHTML = "»";
+        btnUltima.title = "Última página";
+        btnUltima.disabled = data.last;
+        btnUltima.onclick = () => cargarProductosPaginados(data.totalPages - 1);
+        controles.appendChild(btnUltima);
+    }
+
+    // ==========================================
+    // 4. EVENTOS DE FILTRADO Y TAMAÑO
+    // ==========================================
+    function cambiarTamanioPagina(nuevoTamanio) {
+        tamanioPagina = parseInt(nuevoTamanio, 10);
+        cargarProductosPaginados(0);
+    }
+
+    function cambiarOrden() {
+        const valor = document.getElementById("selectSort").value;
+        const partes = valor.split("-");
+        sortBy = partes[0];
+        direction = partes[1];
+        cargarProductosPaginados(0);
+    }
+
+    function manejarBusqueda() {
+        clearTimeout(temporizadorBusqueda);
+        temporizadorBusqueda = setTimeout(() => {
+            terminoBusqueda = document.getElementById("inputBuscar").value;
+            cargarProductosPaginados(0);
+        }, 350);
+    }
+
+    // ==========================================
+    // 5. GUARDAR / ACTUALIZAR PRODUCTO
+    // ==========================================
+    document.getElementById("productoForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const id = document.getElementById("id").value;
+        const producto = {
+            nombre: document.getElementById("nombre").value.trim(),
+            descripcion: document.getElementById("descripcion").value.trim(),
+            precio: parseFloat(document.getElementById("precio").value),
+            stock: parseInt(document.getElementById("stock").value, 10)
+        };
+
+        try {
+            let url = API_BASE;
+            let metodo = "POST";
+
+            if (editando && id) {
+                url = `${API_BASE}/${id}`;
+                metodo = "PUT";
+            }
+
+            const respuesta = await fetch(url, {
+                method: metodo,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(producto)
+            });
+
+            const data = await respuesta.json();
+
+            if (!respuesta.ok) {
+                const mensajeError = data.message || "Error al procesar la solicitud.";
+                mostrarToast(mensajeError, "error");
+                return;
+            }
+
+            mostrarToast(editando ? "Producto actualizado correctamente" : "Producto creado correctamente", "success");
+            limpiarFormulario();
+            cargarProductosPaginados(editando ? paginaActual : 0);
+
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            mostrarToast("Error de conexión al guardar el producto", "error");
+        }
+    });
+
+    // ==========================================
+    // 6. CARGAR PARA EDITAR
+    // ==========================================
+    async function cargarParaEditar(id) {
+        try {
+            const res = await fetch(`${API_BASE}/${id}`);
+            if (!res.ok) throw new Error();
+
+            const p = await res.json();
+            document.getElementById("id").value = p.id;
+            document.getElementById("nombre").value = p.nombre;
+            document.getElementById("descripcion").value = p.descripcion || "";
+            document.getElementById("precio").value = p.precio;
+            document.getElementById("stock").value = p.stock;
+
+            editando = true;
+            document.getElementById("tituloFormulario").innerHTML = `<span>✏️</span> Editar Producto #${p.id}`;
+            document.getElementById("btnGuardar").innerHTML = `<span>🔄</span> Actualizar Producto`;
+            document.getElementById("btnCancelar").style.display = "inline-flex";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+        } catch (err) {
+            mostrarToast("No se pudo cargar la información del producto", "error");
+        }
+    }
+
+    // ==========================================
+    // 7. ELIMINAR PRODUCTO
+    // ==========================================
+    async function confirmarEliminacion(id) {
+        if (!confirm(`¿Estás seguro de que deseas eliminar el producto #${id}?`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.message || "Error al eliminar");
+            }
+
+            mostrarToast("Producto eliminado exitosamente", "success");
+            cargarProductosPaginados(paginaActual);
+
+        } catch (err) {
+            mostrarToast(err.message || "Error al eliminar el producto", "error");
+        }
+    }
+
+    function cancelarEdicion() {
+        limpiarFormulario();
+    }
+
+    function limpiarFormulario() {
+        document.getElementById("productoForm").reset();
+        document.getElementById("id").value = "";
+        editando = false;
+
+        document.getElementById("tituloFormulario").innerHTML = `<span>➕</span> Registrar Nuevo Producto`;
+        document.getElementById("btnGuardar").innerHTML = `<span>💾</span> Guardar Producto`;
+        document.getElementById("btnCancelar").style.display = "none";
+    }
+
+    function mostrarToast(mensaje, tipo = "info") {
+        const toast = document.getElementById("toast");
+        toast.textContent = mensaje;
+        toast.className = `toast ${tipo}`;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 4000);
+    }
+
+    function escapeHtml(texto) {
+        if (!texto) return "";
+        return texto
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Cargar la primera página al iniciar
+    document.addEventListener("DOMContentLoaded", () => {
+        cargarProductosPaginados(0);
+    });
+</script>
+
+</body>
+</html>
