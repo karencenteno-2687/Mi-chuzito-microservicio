@@ -101,5 +101,10 @@ Route::get('/pagos/{order}/paypal/cancel',  [PayPalController::class, 'cancel'])
         Route::post('/admin/supplies', [SupplyController::class,'store'])->name('admin.supplies.store');
         Route::post('/admin/supplies/{supply}', [SupplyController::class,'update'])->name('admin.supplies.update');
         Route::delete('/admin/supplies/{supply}', [SupplyController::class,'destroy'])->name('admin.supplies.destroy');
+        
+        // ===== Productos (Microservicio) =====
+        Route::get('/admin/productos-microservicio', function () {
+            return Inertia::render('Admin/ProductosMicroservicio');
+        })->name('admin.productos-microservicio');
     });
 });
